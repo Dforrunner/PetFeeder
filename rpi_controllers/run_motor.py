@@ -6,7 +6,7 @@ def run_motor():
     pin = 14
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-    GPIO.setup(pin, GPIO.IN)
+    GPIO.setup(pin, GPIO.OUT)
 
     GPIO.output(pin, GPIO.LOW)
     print('feeding...')
