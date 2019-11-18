@@ -22,10 +22,6 @@ def index():
     return render_template('index.html', form=form)
 
 
-def feed(interval):
-    return f'{interval}'
-
-
 @app.route('/feed-now', methods=['POST'])
 def feed_now():
     run_motor()
