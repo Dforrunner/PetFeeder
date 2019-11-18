@@ -1,12 +1,10 @@
-import os
 from flask import Flask, render_template
 from forms import IntervalForm
 from rpi_controllers.run_motor import run_motor
-from crontab import CronTab
-# from run_motor import run_motor
-from datetime import datetime
-from apscheduler.schedulers.blocking import BlockingScheduler
-from apscheduler.schedulers.background import BackgroundScheduler
+# from crontab import CronTab
+# from datetime import datetime
+# from apscheduler.schedulers.blocking import BlockingScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'ebehlb34lti43ubfui3n4589hfi4fkejhbkuydwlsbaye'
