@@ -11,7 +11,6 @@ app.config['SECRET_KEY'] = 'ebehlb34lti43ubfui3n4589hfi4fkejhbkuydwlsbaye'
 
 interval = 0
 
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = IntervalForm()
