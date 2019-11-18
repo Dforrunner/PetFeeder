@@ -11,6 +11,19 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <!-- Material Design Bootstrap -->
     <link rel="stylesheet" href="{{ url_for('static', filename='MDB/css/mdb.min.css') }}">
+    <!-- Ajax -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('#feednow').onclick = () => {
+                const request = new XMLHttpRequest();
+                request.open('POST', '/feed-now');
+                request.send();
+                return false;
+            };
+        });
+    </script>
 </head>
 <body>
 
@@ -19,6 +32,36 @@
     <div class="flex-center flex-column">
       <h1 class="animated fadeIn mb-2">Pet Feeder</h1>
 
+
+        <div class="text-center border border-light p-5">
+            <!-- Flash messages -->
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for category, message in messages %}
+                    <div class='alert alert-{{ category }} alert-dismissible m-1 p-1' role="alert">
+                    <button type="button" class="close m-1 p-1" data-dismiss="alert">x</button>
+                    {{ message }}
+                    </div>
+               {% endfor %}
+              {% endif %}
+            {% endwith %}
+            <!-- Flash messages -->
+
+            <!-- Feed now button -->
+            <button class='btn btn-success btn-block' id="feednow"> Feed Now</button>
+
+            <hr>
+            <!-- Set interval form -->
+            <form method="POST">
+
+                <p class="h4 mb-4">Feed cats every...</p>
+
+                <!-- Subject -->
+                {{ form.interval(class_="browser-default custom-select mb-4") }}
+                {{ form.submit(class_='btn btn-info btn-block') }}
+            </form>
+            <!-- Set interval form-->
+        </div>
     </div>
   </div>
   <!-- /Start your project here-->
