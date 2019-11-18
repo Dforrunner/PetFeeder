@@ -3,7 +3,7 @@ import time
 
 
 def run_motor():
-    pin = 18
+    pin = 14
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(pin, GPIO.OUT)
