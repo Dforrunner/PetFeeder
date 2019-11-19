@@ -31,7 +31,7 @@ class CRUDMixin(object):
 class Schedule(CRUDMixin, db.Model):
     __tablename__ = 'scheduled_times'
     id = db.Column(db.Integer, primary_key=True)
-    time = db.Column(db.Integer, nullable=False)
+    time = db.Column(db.Integer, nullable=False, unique=True)
 
     def __init__(self, time):
         self.time = time

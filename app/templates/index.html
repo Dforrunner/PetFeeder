@@ -11,96 +11,44 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <!-- Material Design Bootstrap -->
     <link rel="stylesheet" href="{{ url_for('static', filename='MDB/css/mdb.min.css') }}">
-    <!-- Ajax -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <!-- My Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/style.css') }}">
+
 
     <script type="text/javascript">
-        document.addEventListener('DOMContentLoaded', () => {
-            function S(select) {
-                return document.querySelector(select)
-            };
-
-            const sleep = (ms) => {
-                return new Promise(resolve => setTimeout(resolve, ms))
-            };
-
-            function converTime(t){
-                if (t < 13){
-                    return t + ':00 am'
-                } else {
-                    return (t-12) + ':00 pm'
-                }
-            }
-
-            S('#feednow').onclick = function() {
-                // Change button style and text
-                this.innerHTML = 'Feeding...';
-                this.classList.remove('btn-success');
-                this.classList.add('btn-grey');
-
-                // Initialize new request
+            function remove_time(rem_time){
                 const request = new XMLHttpRequest();
-                request.open('POST', '/feed-now');
+                request.open('POST', '/remove-time');
 
-                // Callback function from when request completed
-                request.onload = async () => {
-
-                      // Extact JSON data from request
-                      const data = JSON.parse(request.responseText);
-
-                      // Let user know request is completed
-                      if (data.success){
-                          this.innerHTML = 'Complete!';
-                      }
-                      // sleep to give the user time to read the complete message
-                      await sleep(3000);
-
-                      // change text and styling back to original form
-                      this.innerHTML = "Feed Now";
-                      this.classList.remove('btn-grey');
-                      this.classList.add('btn-success');
-                };
-                request.send();
-                return false;
-            };
-
-            S('#sched-form').onsubmit = function() {
-                // Initialize new request
-                const request = new XMLHttpRequest();
-                let e = S('#add-to-sched');
-                let add_time = e.options[e.selectedIndex].value;
-
-                request.open('POST', '/add-to-schedule');
-
-                //Callback function
                 request.onload = () => {
+
+                    //Remove contents of the messages
+                    document.querySelector('#error-msg').innerHTML = '';
+
                     const data = JSON.parse(request.responseText);
 
-                    if (data.success){
-                        const content = `<div class="border border-light p-1 m-0 text-left success-color">Feed at: ${converTime(add_time)}</div>`;
-                        S('#sched-list').innerHTML += content;
+                    if(data.success){
+                       document.querySelector(`#time${rem_time}`).remove();
+                    } else {
+                       const content = `<div class="row justify-content-center alert alert-danger text-center">Error: Could not delete time.</div>`;
+                       document.querySelector('#error-msg').innerHTML += content;
                     }
                 };
 
-                // Add data to send with request
                 const data = new FormData();
-                data.append('add_time', add_time);
+                data.append('rem_time', rem_time);
 
-                //Send request
                 request.send(data);
                 return false;
-            };
-        });
+            }
     </script>
 </head>
 <body>
 
     <!-- Start your project here-->
-  <div class="row justify-content-center text-center">
-    <div class="col-4">
+  <div class="row justify-content-center text-center mt-4">
+    <div class="col-lg-5 col-md-7 col-sm-6 col-xm-12">
       <h1 class="animated fadeIn mb-2">Pet Feeder</h1>
-
-
         <div class="text-center border border-light p-5">
             <!-- Flash messages -->
             {% with messages = get_flashed_messages() %}
@@ -119,16 +67,16 @@
             <button class='btn btn-success btn-block' id="feednow"> Feed Now</button>
 
             <hr>
-            <p class="h4 mb-4">Create Schedule</p>
-
             <!-- Scheduled time list -->
-            {% if schedule is not none %}
+            {% if schedule|length|int > 0 %}
                 <p>Current scheduled times:</p>
+            {% else %}
+                <p class="h4 mb-4">Create Schedule</p>
             {% endif %}
 
             <div class="p-3 " id="sched-list">
                 {% for t in schedule %}
-                    <div class="row justify-content-center">
+                    <div class="row justify-content-center" id="time{{ t.time }}">
                          <div class="col-3 alert alert-primary text-center m-0 p-1 rounded-0">
                             <i class="fas fa-lg fa-stopwatch"></i>
                         </div>
@@ -139,20 +87,21 @@
                                 {{ (t.time)|int - 12 }}:00 pm
                             {% endif %}
                         </div>
-                        <button class="col-2 btn btn-danger shadow-none text-center text-center m-0 p-1 rounded-0 border border-light" data-time_id="{{ t.id }}">
+                        <button class="col-2 btn btn-danger shadow-none text-center text-center m-0 p-1 rounded-0 border border-light" onclick="remove_time({{ t.time }})">
                             <i class="fas fa-lg fa-times"></i>
                         </button>
                     </div>
                 {% endfor %}
             </div>
 
+            <div id="error-msg"></div>
 
             <!-- Set interval form -->
             <form id='sched-form'>
                 <label>Add a time:</label>
                 <!-- Subject -->
                 <select class="browser-default custom-select" id="add-to-sched">
-                    <option value="" disabled selected>Choose Time</option>
+                    <option value="disabled-option" disabled selected>Choose Time</option>
                     <option value="1">1 am</option>
                     <option value="2">2 am</option>
                     <option value="3">3 am</option>
@@ -176,25 +125,26 @@
                     <option value="21">9 pm</option>
                     <option value="22">10 pm</option>
                     <option value="23">11 pm</option>
-                    <option value="24">12 am</option>
+                    <option value="0">12 am</option>
                 </select>
-                <input type="submit" class="btn btn-info btn-block m-3 shadow-none" value="Add to schedule">
+                <input type="submit" class="btn btn-info btn-block mt-3 shadow-none" value="Add to schedule">
             </form>
             <!-- Set interval form-->
         </div>
     </div>
   </div>
-  <!-- /Start your project here-->
 
-  <!-- SCRIPTS -->
-  <!-- JQuery -->
-  <script type="text/javascript" src="{{ url_for('static', filename='MDB/js/jquery-3.4.1.min.js') }}"></script>
-  <!-- Bootstrap tooltips -->
-  <script type="text/javascript" src="{{ url_for('static', filename='MDB/js/popper.min.js') }}"></script>
-  <!-- Bootstrap core JavaScript -->
-  <script type="text/javascript" src="{{ url_for('static', filename='MDB/js/bootstrap.min.js') }}"></script>
-  <!-- MDB core JavaScript -->
-  <script type="text/javascript" src="{{ url_for('static', filename='MDB/js/mdb.min.js') }}"></script>
 
+    <!-- SCRIPTS -->
+    <!-- JQuery -->
+    <script type="text/javascript" src="{{ url_for('static', filename='MDB/js/jquery-3.4.1.min.js') }}"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="{{ url_for('static', filename='MDB/js/popper.min.js') }}"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="{{ url_for('static', filename='MDB/js/bootstrap.min.js') }}"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="{{ url_for('static', filename='MDB/js/mdb.min.js') }}"></script>
+    <!-- My js script -->
+    <script type="text/javascript" src="{{ url_for('static', filename='scripts/index.js') }}"></script>
 </body>
 </html>
