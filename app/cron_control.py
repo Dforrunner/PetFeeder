@@ -14,7 +14,7 @@ def run_motor_command():
 
 # Adding cron job
 def cron_add(time):
-    job = cron.new(command=run_motor_command(), comment=f'{time}')
+    job = cron.new(command=run_motor_command(), comment=str(time))
     job.day.on(time)
     cron.write()
     return None
@@ -22,7 +22,7 @@ def cron_add(time):
 
 # Removing cron job
 def cron_remove(time):
-    job = cron.find_comment(f'{time}')
+    job = cron.find_comment(str(time))
     cron.remove(job)
     cron.write()
     return None
