@@ -81,8 +81,12 @@
                             <i class="fas fa-lg fa-stopwatch"></i>
                         </div>
                          <div class="col-7 alert alert-primary text-center font-weight-bold m-0 p-1 rounded-0">
-                            {% if (t.time|int) < 13 %}
+                            {% if (t.time|int) < 12 and (t.time|int) > 0 %}
                                 {{ t.time }}:00 am
+                            {% elif (t.time|int) == 0 %}
+                                12:00 am
+                            {% elif (t.time|int) == 12 %}
+                                12:00 pm
                             {% else %}
                                 {{ (t.time)|int - 12 }}:00 pm
                             {% endif %}

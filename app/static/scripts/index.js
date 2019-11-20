@@ -12,9 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Convert to regular time
     function converTime(t){
-        if (t < 13){
+        t = Number(t); //cast to number
+        if (t > 0 && t < 12){
             return t + ':00 am'
-        } else {
+        } else if(t === 0) {
+            return "12:00 am"
+        } else if(t === 12) {
+            return '12:00 pm'
+        } else if(t > 12){
             return (t-12) + ':00 pm'
         }
     }

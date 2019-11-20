@@ -31,7 +31,7 @@ def add_to_schedule():
     if not unique_time(add_time):
         return jsonify({'success': False})
 
-    if 0 < int(add_time) < 24:
+    if int(add_time) < 24:
         new_time = Schedule(time=int(add_time))
         new_time.save(new_time)
 
