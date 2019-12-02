@@ -16,7 +16,7 @@ def index():
 @main.route('/feed-now', methods=['POST'])
 def feed_now():
     # Run the motor now
-    run_motor(food_amount=5)  # This is actually the number of seconds the motor will be running
+    run_motor(food_amount=1.25)  # This is actually the number of seconds the motor will be running
     return jsonify({'success': True})
 
 
