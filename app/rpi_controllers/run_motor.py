@@ -49,15 +49,17 @@ def run_motor(food_amount):
         loop_num = 3
         food_amount = round(food_amount/3, 1)
 
-    for i in range(1, loop_num):
+    i = 0
+    while i < loop_num:
         run_unclog_motor()
 
         # I'm using a Sainsmart 4 relay module which works backwards mean LOW turns it on and HIGH turns it off.
-        GPIO.output(pin, GPIO.LOW) # converoy belt
+        GPIO.output(pin, GPIO.LOW)  # conveyor belt
         print('feeding...')
         time.sleep(food_amount())
         GPIO.output(pin, GPIO.HIGH)
         print('complete!')
+        i += 1
 
     run_unclog_motor()
     GPIO.cleanup()
