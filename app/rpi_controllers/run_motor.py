@@ -1,16 +1,20 @@
 import RPi.GPIO as GPIO
 import time
+import os
+
+__location__ = os.path.realpath(
+    os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
 
 def set_motor_runtime(t):
-    f = open("app/rpi_controllers/motor_runtime.txt", "r+")
+    f = open(os.path.join(__location__, 'rpi_controllers/motor_runtime.txt'), "r+")
     f.truncate()
     f.write(str(t))
     f.close()
 
 
 def get_motor_runtime():
-    f = open("app/rpi_controllers/motor_runtime.txt", "r")
+    f = open(os.path.join(__location__, 'rpi_controllers/motor_runtime.txt'), "r")
     line = f.read().splitlines(True)
     return float(line[0])
 
