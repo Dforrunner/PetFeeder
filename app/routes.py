@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, jsonify, request
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for
 from sqlalchemy import asc
 from app.modals import Schedule
 from .rpi_controllers.run_motor import set_motor_runtime, get_motor_runtime, run_motor
@@ -76,7 +76,7 @@ def test(run_test):
         cron_test()
     else:
         cron_test_done()
-    main()
+    return redirect(url_for('main.index'))
 
 
 # Check if time is unique if not return false
