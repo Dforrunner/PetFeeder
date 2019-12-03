@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, jsonify, request
 from sqlalchemy import asc
 from app.modals import Schedule
-from .rpi_controllers.run_motor import run_motor
+from .rpi_controllers.run_motor import set_motor_runtime, get_motor_runtime, run_motor
 from .cron_control import cron_add, cron_remove
 
 main = Blueprint('main', __name__)
@@ -10,13 +10,13 @@ main = Blueprint('main', __name__)
 @main.route('/')
 def index():
     schedule = Schedule.query.order_by(asc(Schedule.time)).all()
-    return render_template('index.html', schedule=schedule)
+    return render_template('index.html', schedule=schedule, motor_time_value=get_motor_runtime())
 
 
 @main.route('/feed-now', methods=['POST'])
 def feed_now():
     # Run the motor now
-    run_motor(food_amount=1.25)  # This is actually the number of seconds the motor will be running
+    run_motor(food_amount=get_motor_runtime())  # This is actually the number of seconds the motor will be running
     return jsonify({'success': True})
 
 
@@ -52,6 +52,18 @@ def remove_time():
 
         # Remove time from cron
         cron_remove(rem_time)
+    except:
+        return jsonify({'success': False})
+
+    return jsonify({'success': True})
+
+
+@main.route('/set-motor-time', methods=['POST'])
+def set_motor_time():
+    try:
+        motor_runtime = request.form.get('motor_runtime')
+        # print(motor_runtime)
+        set_motor_runtime(motor_runtime)
     except:
         return jsonify({'success': False})
 

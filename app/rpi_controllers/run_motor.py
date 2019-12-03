@@ -2,57 +2,64 @@ import RPi.GPIO as GPIO
 import time
 
 
-def set_motor_time(t):
-    fin = open("motor_runtime.txt", "r")
-    fout = open("motor_runtime.txt", "w")
-    first_row = True
-    for row in fin:
-        if first_row:
-            row = str(t)
-            first_row = False
-        fout.write(row)
+def set_motor_runtime(t):
+    f = open("app/rpi_controllers/motor_runtime.txt", "r+")
+    f.truncate()
+    f.write(str(t))
     f.close()
 
 
 def get_motor_runtime():
-    f = open("motor_runtime.txt", "r")
+    f = open("app/rpi_controllers/motor_runtime.txt", "r")
     line = f.read().splitlines(True)
-    return int(line[0])
+    return float(line[0])
 
 
-def run_unclug_motor(run_time):
+def run_unclog_motor():
     pin = 15
     GPIO.setup(pin, GPIO.OUT)
 
     GPIO.output(pin, GPIO.LOW)
-    time.sleep(run_time)
+    time.sleep(1)
     GPIO.output(pin, GPIO.HIGH)
     time.sleep(1)
     GPIO.output(pin, GPIO.LOW)
-    time.sleep(run_time)
+    time.sleep(1)
     GPIO.output(pin, GPIO.HIGH)
+
 
 def run_motor(food_amount):
     pin = 14
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     GPIO.setup(pin, GPIO.OUT)
+    loop_num = 1
 
-    run_unclug_motor(0.5)
+    # The dispenser hole gets clogged again after the unclog motor is done running.
+    # Meaning if we were to run the conveyor that dispenses the food into the bowl for more than 2-3 seconds we won't
+    # be getting any food. So we need to remember to run the unclog motor in short intervals
+    if 3 < food_amount < 6:
+        loop_num = 2
+        food_amount = round(food_amount/2, 1)
+    elif food_amount > 6:
+        loop_num = 3
+        food_amount = round(food_amount/3, 1)
 
-# I'm using a Sainsmart 4 relay module which works backwards mean LOW turns it on and HIGH turns it off.
-    GPIO.output(pin, GPIO.LOW) # converoy belt
-    print('feeding...')
-    time.sleep(food_amount)
-    GPIO.output(pin, GPIO.HIGH)
-    print('complete!')
+    for i in range(1, loop_num):
+        run_unclog_motor()
 
-    run_unclug_motor(0.5)
+        # I'm using a Sainsmart 4 relay module which works backwards mean LOW turns it on and HIGH turns it off.
+        GPIO.output(pin, GPIO.LOW) # converoy belt
+        print('feeding...')
+        time.sleep(food_amount())
+        GPIO.output(pin, GPIO.HIGH)
+        print('complete!')
 
+    run_unclog_motor()
     GPIO.cleanup()
     return None
 
 
 if __name__ == '__main__':
-    run_motor(3)
+    run_motor(get_motor_runtime())
 

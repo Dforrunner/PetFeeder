@@ -143,4 +143,42 @@ document.addEventListener('DOMContentLoaded', () => {
         request.send(data);
         return false;
     };
+
+    S('#motor_runtime_form').onsubmit = function () {
+        const request = new XMLHttpRequest();
+        request.open('POST', '/set-motor-time');
+
+        let e = S('#timeSlider');
+        let motor_runtime = e.value;
+
+        let submit_btn = S('#tSubmitBtn');
+        submit_btn.value = 'Submitting Changes...';
+        submit_btn.classList.remove('btn-info');
+        submit_btn.classList.add('btn-grey');
+
+        request.onload = async () => {
+            const data = JSON.parse(request.responseText);
+            if (data.success){
+                await sleep(1500);
+                submit_btn.value = 'Complete!';
+                await sleep(1500);
+
+                // change text and styling back to original form
+                submit_btn.value = "Set Amount";
+                submit_btn.classList.remove('btn-grey');
+                submit_btn.classList.add('btn-info');
+            }else {
+
+            }
+
+        };
+
+        const data = new FormData();
+        data.append('motor_runtime', motor_runtime);
+
+        request.send(data);
+        return false;
+
+    };
+
 });
