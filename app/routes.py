@@ -2,7 +2,7 @@ from flask import Blueprint, render_template, jsonify, request
 from sqlalchemy import asc
 from app.modals import Schedule
 from .rpi_controllers.run_motor import set_motor_runtime, get_motor_runtime, run_motor
-from .cron_control import cron_add, cron_remove
+from .cron_control import cron_add, cron_remove, cron_test, cron_test_done
 
 main = Blueprint('main', __name__)
 
@@ -69,6 +69,14 @@ def set_motor_time():
 
     return jsonify({'success': True})
 
+
+@main.route('/test/<string:run_test>')
+def test(run_test):
+    if run_test == 'yes':
+        cron_test()
+    else:
+        cron_test_done()
+    return None
 
 # Check if time is unique if not return false
 def unique_time(t):

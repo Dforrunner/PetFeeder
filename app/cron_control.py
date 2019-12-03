@@ -26,3 +26,18 @@ def cron_remove(time):
     cron.remove(job)
     cron.write()
     return None
+
+
+# The functions below are meant for testing alone
+def cron_test():
+    job = cron.new(command=run_motor_command(), comment='Test')
+    job.minute.every()
+    cron.write()
+    return None
+
+
+def cron_test_done():
+    job = cron.find_comment('Test')
+    cron.remove(job)
+    cron.write()
+    return None
