@@ -8,7 +8,7 @@ cron = CronTab(user='pi')
 def run_motor_command():
     basedir = os.path.abspath(os.path.dirname(__file__))
     run_motor_path = os.path.join(basedir, 'rpi_controllers/run_motor.py')
-    path = "python3" + run_motor_path
+    path = "python3 " + run_motor_path
     return path
 
 
