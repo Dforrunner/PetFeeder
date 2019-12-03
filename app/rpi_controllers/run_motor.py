@@ -7,14 +7,14 @@ __location__ = os.path.realpath(
 
 
 def set_motor_runtime(t):
-    f = open(os.path.join(__location__, 'rpi_controllers/motor_runtime.txt'), "r+")
+    f = open(os.path.join(__location__, 'motor_runtime.txt'), "r+")
     f.truncate()
     f.write(str(t))
     f.close()
 
 
 def get_motor_runtime():
-    f = open(os.path.join(__location__, 'rpi_controllers/motor_runtime.txt'), "r")
+    f = open(os.path.join(__location__, 'motor_runtime.txt'), "r")
     line = f.read().splitlines(True)
     return float(line[0])
 
