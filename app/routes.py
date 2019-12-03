@@ -76,7 +76,8 @@ def test(run_test):
         cron_test()
     else:
         cron_test_done()
-    return None
+    main()
+
 
 # Check if time is unique if not return false
 def unique_time(t):

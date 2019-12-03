@@ -120,7 +120,13 @@
                 <hr>
                 <div>
                     <div>
+                        <button type="button" class="btn" data-toggle="collapse" data-target="#testSettings"><i class="fas fa-cog"></i> Test Settings</button>
                         <button type="button" class="btn" data-toggle="collapse" data-target="#About"><i class="fas fa-info-circle"></i> About</button>
+                    </div>
+
+                    <div id="testSettings" class="collapse">
+                       <a href="{{url_for('main.test', run_test='yes')}}">RUN TEST</a>
+                        <a href="{{url_for('main.test', run_test='no')}}">STOP TEST</a>
                     </div>
 
                     <div id="About" class="collapse">
