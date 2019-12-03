@@ -31,7 +31,7 @@ def cron_remove(time):
 # The functions below are meant for testing alone
 def cron_test():
     job = cron.new(command=run_motor_command(), comment='Test')
-    job.minute.every()
+    job.minute.every(1)
     cron.write()
     return None
 
